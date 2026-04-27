@@ -4,7 +4,7 @@ services:
     container_name: support_tickets_mongo
     restart: unless-stopped
     environment:
-      MONGO_INITDB_DATABASE: support_tickets
+      MONGO_INITDB_DATABASE: support_tickets_db
     volumes:
       - mongo_data:/data/db
     ports:
@@ -23,8 +23,8 @@ services:
     container_name: support_tickets_backend
     restart: unless-stopped
     environment:
-      MONGODB_URL: mongodb://mongo:27017
-      DATABASE_NAME: support_tickets
+      MONGODB_URL: mongodb://mongo:27017/support_tickets_db
+      DATABASE_NAME: support_tickets_db
     ports:
       - "8000:8000"
     depends_on:
@@ -35,10 +35,12 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://13.233.109.44:8000
     container_name: support_tickets_frontend
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_API_URL: http://13.233.109.44:8000
     ports:
       - "3000:3000"
     depends_on:

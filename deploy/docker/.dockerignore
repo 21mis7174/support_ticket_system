@@ -1,0 +1,57 @@
+# RULE-D033: .dockerignore to exclude unnecessary files (RULE-P006: reduce build context)
+# Source control
+.git
+.gitignore
+.gitattributes
+.github/
+
+# Dependencies (will be installed in container)
+node_modules
+npm-debug.log
+package-lock.json  # optional - can remove if you want to copy for caching
+yarn.lock
+pnpm-lock.yaml
+
+# Build artifacts (regenerated in container)
+.next
+dist
+build
+out
+
+# Environment files (production .env will be copied explicitly)
+.env.local
+.env.*.local
+
+# IDE / Editor
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+.sublime-project
+.sublime-workspace
+
+# Development
+.cache
+.eslintcache
+.turbo
+
+# Testing
+coverage
+.nyc_output
+junit.xml
+
+# Logs
+*.log
+logs
+tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation (optional)
+docs
+*.md
+README.md

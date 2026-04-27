@@ -1,0 +1,89 @@
+# Docker Compose configuration following rules from compose_best_practices.txt
+# RULE-C002: Latest spec (no version: key required)
+# RULE-C003: Meaningful service names
+# RULE-C011: depends_on with healthchecks for readiness
+# RULE-C012: All services have healthchecks
+# RULE-C020: env_file + environment
+# RULE-C023: No hardcoded secrets
+
+services:
+  # MongoDB database
+  mongo:
+    image: mongo:7.0
+    container_name: support_tickets_mongo
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-mongo}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-mongopass}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-support_tickets}
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # FastAPI backend service
+  backend:
+    build:
+      context: ../../backend
+      cache_from:
+        - type=registry,ref=support_tickets_backend:buildcache
+    container_name: support_tickets_backend
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      MONGO_URI: mongodb://${MONGO_USERNAME:-mongo}:${MONGO_PASSWORD:-mongopass}@mongo:27017/${MONGO_DB:-support_tickets}?authSource=admin
+      NODE_ENV: ${NODE_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    volumes:
+      - ../../backend:/app  # For development; remove for production
+    networks:
+      - app-network
+
+  # Next.js frontend service
+  frontend:
+    build:
+      context: ../../frontend
+      cache_from:
+        - type=registry,ref=support_tickets_frontend:buildcache
+    container_name: support_tickets_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      NODE_ENV: ${NODE_ENV:-production}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - app-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

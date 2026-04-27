@@ -1,23 +1,55 @@
+# syntax=docker/dockerfile:1
+# Frontend Dockerfile - Following rules from dockerfile_best_practices.txt & performance.txt
+# RULE-D002: Pin base image versions (node:20-alpine, not :latest)
+# RULE-D003: Use alpine for reduced size
+# RULE-D010: Multi-stage build for separation
+# RULE-D020: Layer ordering: system → dependencies → source
+# RULE-P001: Multi-stage to minimize final image
+# RULE-P013: Cache mounts for npm for faster builds
+
 FROM node:20-alpine AS builder
+LABEL stage=build
 
 WORKDIR /app
 
+# Copy dependency manifest first (RULE-D021)
 COPY package.json package-lock.json* ./
-RUN npm ci
 
+# Install dependencies with cache mount (RULE-P013, RULE-P012 BuildKit)
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --prefer-offline --no-audit --no-fund
+
+# Copy source code after dependencies (RULE-D021)
 COPY . .
+
+# Build Next.js application
 RUN npm run build
 
-# Production image
+# ────────────────────────────────────────────────────────────────────────────────
+# Production image - minimal, secure, fast
 FROM node:20-alpine AS runner
+LABEL stage=prod
 
 WORKDIR /app
 
-ENV NODE_ENV=production
+# Set environment (RULE-C020: environment for few variables)
+ENV NODE_ENV=production \
+    PORT=3000
 
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+# RULE-D040: Don't run as root
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# Copy only necessary artifacts from builder (RULE-D012, RULE-P001)
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# Health check (RULE-C012)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+
+USER nextjs
 
 EXPOSE 3000
 

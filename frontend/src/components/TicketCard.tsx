@@ -9,7 +9,9 @@ interface TicketCardProps {
 }
 
 function timeAgo(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
+  // Ensure timestamp is treated as UTC (add Z if not present)
+  const utcIso = iso.endsWith('Z') ? iso : iso + 'Z';
+  const diff = Date.now() - new Date(utcIso).getTime();
   const minutes = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
