@@ -1,0 +1,48 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: support_tickets_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: support_tickets
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: support_tickets_backend
+    restart: unless-stopped
+    environment:
+      MONGODB_URL: mongodb://mongo:27017
+      DATABASE_NAME: support_tickets
+    ports:
+      - "8000:8000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: support_tickets_frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
