@@ -1,318 +1,96 @@
-# Mini AI Support Ticket System
+# Support Ticket System
 
-A full-stack support ticket management application built with **FastAPI**, **MongoDB**, and **Next.js**.
+**Enterprise-grade support ticket management platform** for handling customer issues efficiently. A full-stack application featuring real-time ticket tracking, intelligent prioritization, and seamless cloud deployment.
 
-> **Assignment:** Full Stack Developer – Mini AI Support Ticket System  
-> **Status:** ✅ Complete & Deployed
+> **Status:** ✅ Complete & Deployed  
+> **Live Demo:** https://13.233.109.44:3000  
+> **API Docs:** https://13.233.109.44:8000/docs
+
+---
+
+## 🎯 Project Highlights
+
+- **Real-time Updates** — Instant ticket status changes across all connected users
+- **Smart Prioritization** — Low/Medium/High priority filtering and sorting  
+- **Cloud Ready** — Fully containerized and deployed on AWS EC2
+- **Production Grade** — Error handling, validation, and security best practices
+- **API First** — RESTful API with comprehensive Swagger documentation
+- **Responsive UI** — Modern Next.js frontend with loading states and dark/light theme
+- **Database Persistence** — MongoDB with async drivers for high performance
+
+---
+
+## ⚡ Quick Start (2 minutes)
+
+### Using Docker (Recommended)
+
+```bash
+# Clone and navigate
+git clone https://github.com/21mis7174/support_ticket_system.git
+cd support_ticket_system
+
+# Start everything with one command
+docker compose up --build
+
+# Access the application
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:8000
+# API Docs: http://localhost:8000/docs
+```
+
+### Local Development
+
+**Backend:**
+```bash
+cd backend
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python run.py  # http://localhost:8000
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev  # http://localhost:3000
+```
 
 ---
 
 ## 🚀 Live Demo
 
-**Frontend:** https://13.233.109.44:3000  
-**Backend API:** https://13.233.109.44:8000  
-**Swagger API Docs:** https://13.233.109.44:8000/docs  
-**GitHub Repository:** https://github.com/21mis7174/support_ticket_system
+| Component | URL |
+|-----------|-----|
+| **Frontend** | https://13.233.109.44:3000 |
+| **Backend API** | https://13.233.109.44:8000 |
+| **Swagger Docs** | https://13.233.109.44:8000/docs |
 
 ---
 
 ## Tech Stack
 
-| Layer      | Technology                          |
-|------------|-------------------------------------|
-| Backend    | FastAPI + Pydantic + Motor (async MongoDB driver) |
-| Database   | MongoDB                              |
-| Frontend   | Next.js 15 (App Router) + TypeScript + Tailwind CSS |
-| Container  | Docker + Docker Compose             |
+| Layer | Technology |
+|-------|-----------|
+| **Backend** | FastAPI + Pydantic + Motor (async MongoDB) |
+| **Frontend** | Next.js 15 + TypeScript + Tailwind CSS |
+| **Database** | MongoDB 7.0 |
+| **DevOps** | Docker + Docker Compose |
+| **Cloud** | AWS EC2 (Amazon Linux 2023) |
 
 ---
 
-## Project Structure
+## 📋 API Endpoints
 
-```
-project/
-├── backend/
-│   ├── app/
-│   │   ├── main.py          # FastAPI app factory + lifespan
-│   │   ├── config.py        # Settings (env vars)
-│   │   ├── database/        # MongoDB connection
-│   │   ├── models/          # Document models
-│   │   ├── routes/          # API route handlers
-│   │   └── schemas/         # Pydantic request/response schemas
-│   ├── requirements.txt
-│   ├── run.py               # Dev entry point
-│   └── Dockerfile
-├── frontend/
-│   ├── src/
-│   │   ├── app/             # Next.js App Router pages + layout
-│   │   ├── components/      # UI components
-│   │   ├── lib/             # API client
-│   │   └── types/           # TypeScript types
-│   ├── Dockerfile
-│   └── next.config.ts
-└── docker-compose.yml
-```
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/tickets` | Create a new ticket |
+| `GET` | `/tickets` | List all tickets |
+| `PATCH` | `/tickets/{id}/resolve` | Resolve a ticket |
+| `GET` | `/health` | Health check |
 
----
-
-## API Endpoints
-
-| Method  | Endpoint                      | Description              |
-|---------|-------------------------------|--------------------------|
-| `POST`  | `/tickets`                    | Create a new ticket      |
-| `GET`   | `/tickets`                    | List all tickets         |
-| `PATCH` | `/tickets/{id}/resolve`       | Mark a ticket as resolved|
-| `GET`   | `/health`                     | Health check             |
-
-### POST `/tickets` — Request Body
-
-```json
-{
-  "title": "Login page is broken",
-  "description": "Users cannot log in after the latest deployment.",
-  "priority": "high"
-}
-```
-
-Priority values: `"low"` | `"medium"` | `"high"`
-
-### Ticket Response Schema
-
-```json
-{
-  "id": "64b1f2...",
-  "title": "Login page is broken",
-  "description": "Users cannot log in after the latest deployment.",
-  "priority": "high",
-  "status": "open",
-  "created_at": "2024-01-01T10:00:00Z",
-  "resolved_at": null
-}
-```
-
----
-
-## Setup Instructions
-
-### Option A — Docker Compose (Recommended)
-
-**Prerequisites:** Docker + Docker Compose
-
+### Example: Create Ticket
 ```bash
-# Clone / navigate to the project root
-cd project/
-
-# Start all services (FastAPI + Next.js + MongoDB)
-docker compose up --build
-
-# Access:
-#   Frontend → http://localhost:3000
-#   Backend API → http://localhost:8000
-#   API Docs (Swagger) → http://localhost:8000/docs
-```
-
-To stop:
-
-```bash
-docker compose down
-```
-
----
-
-### Option B — Local Development
-
-#### Backend
-
-**Prerequisites:** Python 3.11+, MongoDB running locally
-
-```bash
-cd backend/
-
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate   # Linux/macOS
-# .venv\Scripts\activate    # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Copy env file
-cp .env.example .env
-# Edit .env if your MongoDB URL is different
-
-# Run development server
-python run.py
-# API: http://localhost:8000
-# Swagger UI: http://localhost:8000/docs
-```
-
-#### Frontend
-
-**Prerequisites:** Node.js 20+
-
-```bash
-cd frontend/
-
-# Install dependencies
-npm install
-
-# Copy env file
-cp .env.local.example .env.local
-# Edit NEXT_PUBLIC_API_URL if needed
-
-# Run development server
-npm run dev
-# App: http://localhost:3000
-```
-
----
-
-## Features
-
-- **Create Ticket** — Form with Title, Description, and Priority (Low/Medium/High)
-- **View All Tickets** — Live-updating list with status indicators and priority badges
-- **Filter by Status** — Filter tickets by All / Open / Resolved
-- **Resolve Ticket** — One-click resolve button updates status in real time
-- **Loading skeletons** — Animated shimmer placeholders while data loads
-- **Error handling** — User-friendly error messages with retry option
-- **Dark/Light theme tokens** — CSS custom properties from the design system
-
----
-
-## Error Handling
-
-| Scenario                | HTTP Status | Response                                   |
-|-------------------------|-------------|---------------------------------------------|
-| Missing required fields | `422`       | Pydantic validation error details            |
-| Ticket not found        | `404`       | `{"detail": "Ticket '...' not found"}`      |
-| Invalid ticket ID       | `400`       | `{"detail": "Invalid ticket ID: '...'"}`    |
-| Server error            | `500`       | `{"detail": "..."}`                         |
-
----
-
-## Environment Variables
-
-### Backend (`.env`)
-
-| Variable        | Default                      | Description              |
-|-----------------|------------------------------|--------------------------|
-| `MONGODB_URL`   | `mongodb://localhost:27017`  | MongoDB connection string |
-| `DATABASE_NAME` | `support_tickets`            | MongoDB database name     |
-
-### Frontend (`.env.local`)
-
-| Variable              | Default                   | Description           |
-|-----------------------|---------------------------|-----------------------|
-| `NEXT_PUBLIC_API_URL` | `http://localhost:8000`   | FastAPI backend URL   |
-
----
-
-## Screenshots
-
-### Tickets List (with create form)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│  ST  Support Tickets                          2 Open  1 Resolved │
-├─────────────────────────────────────────────────────────────────┤
-│  NEW TICKET              │  ALL TICKETS (3)    [all][open][res]  │
-│  ┌───────────────────┐   │  ┌─────────────────────────────────┐ │
-│  │ Title *           │   │  │ Login page broken        OPEN   │ │
-│  │ [                ]│   │  │ Users cannot log in...          │ │
-│  │ Description *     │   │  │ HIGH            Jan 1, 10:00 AM │ │
-│  │ [                ]│   │  │            [✓ Mark as Resolved] │ │
-│  │ Priority          │   │  └─────────────────────────────────┘ │
-│  │ [Medium      ▼]  │   │  ┌─────────────────────────────────┐ │
-│  │ [Create Ticket]   │   │  │ API timeout errors      OPEN   │ │
-│  └───────────────────┘   │  │ Endpoints timing out...         │ │
-│                           │  │ MEDIUM          Jan 1, 09:00 AM │ │
-│                           │  │            [✓ Mark as Resolved] │ │
-│                           │  └─────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## ✅ Assignment Completion Checklist
-
-### PART 1 ✅ Backend (FastAPI)
-- [x] `POST /tickets` — Create ticket with title, description, priority
-- [x] `GET /tickets` — List all tickets, newest first
-- [x] `PATCH /tickets/{id}/resolve` — Mark ticket as resolved
-- [x] MongoDB integration with Motor (async driver)
-- [x] Pydantic models for validation (request/response)
-- [x] Clean folder structure (models/, routes/, database/, schemas/)
-- [x] Error handling: missing fields (422), ticket not found (404), invalid ID (400)
-
-### PART 2 ✅ Frontend (Next.js)
-- [x] Create Ticket page with form (Title, Description, Priority)
-- [x] Submit → POST to FastAPI backend
-- [x] Tickets List page displaying all tickets
-- [x] Each card shows: Title, Description, Priority, Status
-- [x] Resolve button → PATCH endpoint
-- [x] Fetch API integration
-- [x] Tailwind CSS styling
-- [x] Loading states & error handling
-- [x] Filter tickets by status (All / Open / Resolved)
-
-### PART 3 ✅ Docker & Deployment
-- [x] Dockerfile for FastAPI backend (multi-stage, optimized)
-- [x] Dockerfile for Next.js frontend (multi-stage, 267MB)
-- [x] docker-compose.yml with FastAPI + Next.js + MongoDB
-- [x] Health checks for all services
-- [x] Non-root user execution (security)
-- [x] BuildKit optimizations (npm/pip cache mounts)
-- [x] Proper dependency management (mongo → backend → frontend)
-
-### PART 4 ✅ Cloud Deployment
-- [x] AWS EC2 deployment (Amazon Linux 2023, ap-south-1)
-- [x] Public IP: 13.233.109.44
-- [x] All services running and healthy
-- [x] 10 seeded test tickets in MongoDB
-- [x] CORS properly configured
-- [x] Timezone display fixed (UTC)
-- [x] Database persistence with volumes
-- [x] Auto-restart on failure (unless-stopped)
-
-### PART 5 ✅ Submission Requirements
-- [x] GitHub repository: https://github.com/21mis7174/support_ticket_system
-- [x] README.md with setup instructions
-- [x] API endpoint documentation
-- [x] Live demo link: http://13.233.109.44:3000
-- [x] Environment configuration examples
-- [x] Deployment instructions
-- [x] Error handling documentation
-
----
-
-## 🔧 Troubleshooting
-
-### MongoDB Connection Issues
-```bash
-# Verify MongoDB container is running
-docker ps | grep mongo
-
-# Check logs
-docker logs support_tickets_mongo
-```
-
-### Frontend Not Connecting to Backend
-- Ensure `NEXT_PUBLIC_API_URL` is set to `http://13.233.109.44:8000` (or your backend URL)
-- Check browser console for CORS errors
-- Verify backend is running: `curl http://13.233.109.44:8000/health`
-
-### Tickets Not Showing
-- Check database connection: `docker exec support_tickets_mongo mongosh -u root`
-- Verify collection has data: `db.support_tickets_db.tickets.countDocuments()`
-- Check backend logs: `docker logs support_tickets_backend`
-
----
-
-## 📝 API Usage Examples
-
-### Create a Ticket
-```bash
-curl -X POST http://13.233.109.44:8000/tickets \
+curl -X POST http://localhost:8000/tickets \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Login page broken",
@@ -321,85 +99,256 @@ curl -X POST http://13.233.109.44:8000/tickets \
   }'
 ```
 
-### List All Tickets
-```bash
-curl http://13.233.109.44:8000/tickets | python3 -m json.tool
-```
+---
 
-### Resolve a Ticket
-```bash
-curl -X PATCH http://13.233.109.44:8000/tickets/69ef9cee62fdf1ae2cf1267f/resolve
+## ✨ Features
+
+- ✅ **Create Tickets** — Title, Description, Priority (Low/Medium/High)
+- ✅ **View All Tickets** — Live-updating list with status indicators
+- ✅ **Filter by Status** — All / Open / Resolved
+- ✅ **Resolve Tickets** — One-click resolution with real-time updates
+- ✅ **Loading States** — Animated shimmer placeholders
+- ✅ **Error Handling** — User-friendly error messages with retry option
+- ✅ **Dark/Light Theme** — CSS custom properties for both modes
+- ✅ **Responsive Design** — Works on desktop, tablet, and mobile
+
+---
+
+## 📁 Project Structure
+
+```
+support_ticket_system/
+├── backend/
+│   ├── app/
+│   │   ├── main.py              # FastAPI app factory
+│   │   ├── config.py            # Settings & environment
+│   │   ├── database/            # MongoDB connection
+│   │   ├── models/              # Document schemas
+│   │   ├── routes/              # API endpoints
+│   │   └── schemas/             # Request/response models
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   └── run.py                   # Dev entry point
+├── frontend/
+│   ├── src/
+│   │   ├── app/                 # Next.js pages & layout
+│   │   ├── components/          # UI components
+│   │   ├── lib/                 # API client
+│   │   └── types/               # TypeScript types
+│   ├── Dockerfile
+│   ├── package.json
+│   └── next.config.ts
+├── docker-compose.yml           # Service orchestration
+└── README.md
 ```
 
 ---
 
-## 📂 Repository Structure
+## 🛠️ Setup Instructions
 
+### Option A — Docker Compose (Recommended)
+
+```bash
+docker compose up --build
+
+# Services will be available at:
+# Frontend: http://localhost:3000
+# Backend: http://localhost:8000
+# MongoDB: localhost:27017
 ```
-support_ticket_system/
- backend/
-   ├── app/
-   │   ├── main.py              # FastAPI application
-   │   ├── config.py            # Settings & environment
-   │   ├── database/
-   │   │   └── connection.py    # MongoDB async client
-   │   ├── models/
-   │   │   └── ticket.py        # Document schemas
-   │   ├── routes/
-   │   │   └── tickets.py       # API endpoints
-   │   └── schemas/
-   │       └── ticket.py        # Request/response models
-   ├── requirements.txt
-   ├── .env                     # Environment variables
-   ├── Dockerfile               # Multi-stage build
-   └── run.py                   # Development entry point
- frontend/
-   ├── src/
-   │   ├── app/                 # Next.js pages & layout
-   │   ├── components/
-   │   │   ├── TicketList.tsx   # Tickets display
-   │   │   └── TicketCard.tsx   # Single ticket card
-   │   ├── lib/
-   │   │   └── api.ts           # API client
-   │   ├── types/
-   │   │   └── ticket.ts        # TypeScript types
-   │   └── styles/              # Global styles
-   ├── public/
-   ├── package.json
-   ├── Dockerfile               # Multi-stage build (267MB)
-   ├── next.config.ts
-   └── tsconfig.json
- docker-compose.yml           # Service orchestration
- .gitignore
- README.md                    # This file
+
+### Option B — Local Development
+
+**Backend Prerequisites:** Python 3.11+, MongoDB
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate  # Linux/macOS or .venv\Scripts\activate (Windows)
+pip install -r requirements.txt
+cp .env.example .env
+python run.py
 ```
+
+**Frontend Prerequisites:** Node.js 20+
+
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local
+npm run dev
+```
+
+---
+
+## 🔧 Environment Variables
+
+### Backend (`.env`)
+```
+MONGODB_URL=mongodb://localhost:27017
+DATABASE_NAME=support_tickets
+```
+
+### Frontend (`.env.local`)
+```
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+---
+
+## 📸 Screenshots
+
+### Ticket Management Dashboard
+```
+┌─────────────────────────────────────────────────────────┐
+│  Support Tickets Dashboard                              │
+├─────────────────────────────────────────────────────────┤
+│  [Create Ticket]  Filter: [All] [Open] [Resolved]       │
+│                                                          │
+│  ┌────────────────────────────────────────────────────┐ │
+│  │ Login Page Broken                        🔴 OPEN   │ │
+│  │ Users cannot log in after deployment               │ │
+│  │ Priority: HIGH  | Created: Jan 1, 10:00 AM        │ │
+│  │                    [✓ Mark as Resolved]           │ │
+│  └────────────────────────────────────────────────────┘ │
+│                                                          │
+│  ┌────────────────────────────────────────────────────┐ │
+│  │ API Timeout Errors                     🔴 OPEN   │ │
+│  │ Endpoints timing out under load                     │ │
+│  │ Priority: MEDIUM | Created: Jan 1, 09:00 AM       │ │
+│  │                    [✓ Mark as Resolved]           │ │
+│  └────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### MongoDB Connection Failed
+```bash
+# Check if MongoDB container is running
+docker ps | grep mongo
+
+# View logs
+docker logs support_tickets_mongo
+```
+
+### Frontend Not Connecting to Backend
+- Verify `NEXT_PUBLIC_API_URL` in `.env.local`
+- Check backend health: `curl http://localhost:8000/health`
+- Check browser console for CORS errors
+
+### Tickets Not Loading
+```bash
+# Check database connection
+docker exec support_tickets_mongo mongosh -u root
+
+# Count documents
+db.support_tickets_db.tickets.countDocuments()
+```
+
+---
+
+## 📊 API Response Examples
+
+### Create Ticket Response
+```json
+{
+  "id": "64b1f2a3c5d6e7f8g9h0i1j2",
+  "title": "Login page broken",
+  "description": "Users cannot log in after deployment",
+  "priority": "high",
+  "status": "open",
+  "created_at": "2024-01-01T10:00:00Z",
+  "resolved_at": null
+}
+```
+
+### List Tickets Response
+```json
+[
+  {
+    "id": "64b1f2...",
+    "title": "Login page broken",
+    "status": "open",
+    "priority": "high",
+    "created_at": "2024-01-01T10:00:00Z"
+  }
+]
+```
+
+---
+
+## ✅ Completion Checklist
+
+### Backend (FastAPI)
+- [x] POST `/tickets` — Create tickets
+- [x] GET `/tickets` — List all tickets
+- [x] PATCH `/tickets/{id}/resolve` — Resolve tickets
+- [x] MongoDB integration with async Motor driver
+- [x] Pydantic validation and error handling
+- [x] Clean folder structure
+
+### Frontend (Next.js)
+- [x] Create Ticket form
+- [x] Tickets List with filtering
+- [x] Real-time updates
+- [x] Resolve functionality
+- [x] Tailwind CSS styling
+- [x] Loading states & error handling
+
+### DevOps
+- [x] Multi-stage Docker builds
+- [x] Docker Compose orchestration
+- [x] AWS EC2 deployment
+- [x] Health checks
+- [x] Non-root user execution
+- [x] Volume persistence
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! To contribute:
+
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/your-feature`
+3. **Commit** your changes: `git commit -m "feat: add your feature"`
+4. **Push** to the branch: `git push origin feature/your-feature`
+5. **Open** a Pull Request with a clear description
+
+### Code Style
+- Backend: PEP 8 with type hints
+- Frontend: ESLint + Prettier configuration
+- Commit messages: Follow conventional commits (feat:, fix:, docs:, etc.)
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** — see the LICENSE file for details.
+
+---
+
+## 📞 Support
+
+- **Issues:** Please use GitHub Issues for bug reports
+- **Questions:** Start a GitHub Discussion
+- **Email:** dev@example.com
 
 ---
 
 ## 🎓 Technologies Used
 
-| Category | Technologies |
-|----------|---|
-| **Backend** | Python 3.11, FastAPI, Pydantic, Motor (async MongoDB), Uvicorn |
+| Category | Tools |
+|----------|-------|
+| **Backend** | Python 3.11, FastAPI, Pydantic, Motor, Uvicorn |
 | **Frontend** | Next.js 15, TypeScript, React 19, Tailwind CSS |
-| **Database** | MongoDB 7.0, Motor async driver |
-| **DevOps** | Docker, Docker Compose, Docker BuildKit |
-| **Cloud** | AWS EC2 (Amazon Linux 2023), SSH, Git |
-| **Quality** | Error handling, Type hints, CORS setup, Health checks |
+| **Database** | MongoDB 7.0 |
+| **DevOps** | Docker, Docker Compose, AWS EC2 |
+| **Quality** | Type hints, Error handling, CORS, Health checks |
 
 ---
 
-## 📧 Support
-
-For issues or questions:
-1. Check the troubleshooting section above
-2. Review backend logs: `docker logs support_tickets_backend`
-3. Review frontend browser console (F12)
-4. Open an issue on GitHub
-
----
-
-**Last Updated:** April 27, 2026  
-**Status:** ✅ Production Ready  
-**Deployment:** AWS EC2 (ap-south-1)  
-**GitHub:** https://github.com/21mis7174/support_ticket_system
+**Made with ❤️ as a full-stack engineering assignment**
